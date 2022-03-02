@@ -1,5 +1,6 @@
 package co.edu.unisabaneta.mifactura.modelo;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Factura {
@@ -9,6 +10,13 @@ public class Factura {
     private Date fecha;
     private Cliente cliente;
     private ItemFactura[] items;
+
+    public Factura(int folio,String descripcion, Cliente cliente) {
+        this.folio = folio;
+        this.descripcion = descripcion;
+        this.cliente = cliente;
+        this.fecha = new Date();
+    }
 
     public int getFolio() {
         return folio;
@@ -50,17 +58,53 @@ public class Factura {
         this.items = items;
     }
 
-    public float calcularTotal(){
+    public float calcularTotal() {
         float total = 0;
-        /*
+/*
         for(int i=0;i<items.length;i++){
-
-        }*/
-        for(ItemFactura item : this.items){
-            //total = total + item.calcularImporte();
-            total += item.calcularImporte();
         }
-
+*/
+        for (ItemFactura item : this.items) {
+            if (item == null) {
+                continue;
+            }
+            total = total + item.calcularImporte();
+        }
         return total;
     }
+
+    public String verDetalle() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd 'de' MMMM, yyyy");
+        StringBuilder sb = new StringBuilder("Factura N°: ");
+        sb.append(this.folio)
+                .append("\nCliente: ")
+                .append(this.cliente.getNombre())
+                .append("\nNIT: ")
+                .append(this.cliente.getNit())
+                .append("\nDescripcion: ")
+                .append(this.descripcion)
+                .append("\nFecha Emision: ")
+                .append(dateFormat.format(this.fecha))
+                .append("\n")
+                .append("\nItem\tNombre\tPrecio\tCanti\tTotal\n");
+        for (ItemFactura item : this.items) {
+            if (item == null) {
+                continue;
+            }
+            sb.append(item.getProducto().getCodigo())
+                    .append("\t")
+                    .append(item.getProducto().getNombre())
+                    .append("\t")
+                    .append(item.getProducto().getPrecio())
+                    .append("\t")
+                    .append(item.getCantidad())
+                    .append("\t")
+                    .append(item.calcularImporte())
+                    .append("\n");
+        }
+        sb.append("\nGran Total: ")
+                .append(calcularTotal());
+        return sb.toString();
+    }
+
 }
