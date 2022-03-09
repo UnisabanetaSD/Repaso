@@ -10,12 +10,17 @@ public class Factura {
     private Date fecha;
     private Cliente cliente;
     private ItemFactura[] items;
+    private static final int MAX_ITEMS = 10;
+    private int indiceItems;
 
-    public Factura(int folio,String descripcion, Cliente cliente) {
+    public Factura(){}
+
+    public Factura(int folio, String descripcion, Cliente cliente) {
         this.folio = folio;
         this.descripcion = descripcion;
         this.cliente = cliente;
         this.fecha = new Date();
+        this.items = new ItemFactura[MAX_ITEMS];
     }
 
     public int getFolio() {
@@ -105,6 +110,12 @@ public class Factura {
         sb.append("\nGran Total: ")
                 .append(calcularTotal());
         return sb.toString();
+    }
+
+    public void addItemFactura(ItemFactura item) {
+        if (indiceItems < MAX_ITEMS) {
+            this.items[indiceItems++] = item;
+        }
     }
 
 }
